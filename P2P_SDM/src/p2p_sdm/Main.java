@@ -14,13 +14,8 @@ public class Main {
 		
 		
 		Peer peer = new Peer();
-		peer.Init();
-		peer.join(vector1);
-		peer.request(vector2);
-		
-		
-		
-		
+		peer.init();
+		peer.join();
 		
 		
 

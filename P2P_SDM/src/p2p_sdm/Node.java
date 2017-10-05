@@ -1,13 +1,56 @@
 package p2p_sdm;
 
-public interface Node {
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+import sdm.BitVector;
+import sdm.SDMImpl;
+
+public abstract class Node {
 	
-	/* Init() is used for 
-	 * memory intialization
-	 * ID generation  */
-	public void Init();
+	protected int memory_size = 100;
+	protected int word_size = 1000;
+
 	
+	public Socket handleConnection(String IP, int port){
+		  Socket conn = null;
+		try {
+			conn = new Socket(IP, port);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		  return conn;
+	}
 	
+	public void send(Socket sock, Message m) {
+		try {
+			ObjectOutputStream outToPeer = new ObjectOutputStream(sock.getOutputStream());
+			outToPeer.writeObject(m);
+			//sock.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
+	public Message receive(Socket sock){
+		ObjectInputStream fromPeer;
+		Message m = null;
+		try {
+			fromPeer = new ObjectInputStream(sock.getInputStream());
+			m = (Message) fromPeer.readObject();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return m;
+	}
+	
+
 
 }

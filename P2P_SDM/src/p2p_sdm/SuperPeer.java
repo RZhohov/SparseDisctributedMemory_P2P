@@ -4,53 +4,54 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Hashtable;
 
 import sdm.BitVector;
 
 
 
-public class SuperPeer implements Node {
+public class SuperPeer extends Node {
+	
+	
+    Hashtable<String, BitVector> register =new Hashtable<String, BitVector>();  	
 
-	@Override
-	public void Init() {
 	
-	}
-	
-	
-	public void handleJoin() throws ClassNotFoundException{
+	public void loop() {
 		ServerSocket welcomeSocket;
 		try {
 			welcomeSocket = new ServerSocket(8080);
 			 while (true) {
 				   System.out.println("Listening");
 				   Socket connectionSocket = welcomeSocket.accept();
-				   ObjectInputStream fromPeer = new ObjectInputStream(connectionSocket.getInputStream());
-				   Object request = fromPeer.readObject();
-				   if (request.equals("query"))
+				   ObjectInputStream input = new ObjectInputStream(connectionSocket.getInputStream());
+				   Message fromPeer = (Message) input.readObject();
+				   if (fromPeer.getType() == fromPeer.JOIN)
 				   {
-					   BitVector vector = (BitVector) fromPeer.readObject();
-					   System.out.println("Peer looks for" + vector.print());
+					   BitVector ID = (BitVector) fromPeer.getContent();
+					   register.put(connectionSocket.getInetAddress().getHostAddress(), ID);
+					   System.out.println("Join from "+connectionSocket.getInetAddress().getHostAddress());
+					   System.out.println("ID is "+ ID.print());
+					   
+					   Message toPeer = new Message(0, "");
+					   send(connectionSocket, toPeer);
+					   connectionSocket.close();
 				   }
-				   else
-				   {
-					   BitVector peerID = (BitVector) request;
-					   System.out.println("Joined peer ID: "+peerID.print());
-				   }
+
 				   
 				  }
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-
-	}
-	
-	public static void main(String[] args) {
-		SuperPeer speer = new SuperPeer();
-		try {
-			speer.handleJoin();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+
+	}
+
+
+	
+	public static void main(String[] args) {
+		SuperPeer speer = new SuperPeer();
+		speer.loop();
 	}
 
 }
