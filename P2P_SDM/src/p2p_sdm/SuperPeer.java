@@ -7,15 +7,29 @@ import java.net.Socket;
 import java.util.Hashtable;
 
 import sdm.BitVector;
+import sdm.SDMImpl;
 
 
 
 public class SuperPeer extends Node {
 	
 	
-    Hashtable<String, BitVector> register =new Hashtable<String, BitVector>();  	
+    private Hashtable<String, BitVector> register =new Hashtable<String, BitVector>();  
+    private SDMImpl sdm;
+    private BitVector ID;
+    
+    /**
+     * Constructs SuperPeer
+     * generates SDM and ID
+     */
+	public SuperPeer() {
+		sdm = new SDMImpl(memory_size, 100, word_size);
+		ID = sdm.generateID();
+	}
 
-	
+	/**
+	 * Main loop
+	 */
 	public void loop() {
 		ServerSocket welcomeSocket;
 		try {

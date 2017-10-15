@@ -14,7 +14,6 @@ public class Main {
 		
 		
 		Peer peer = new Peer();
-		peer.init();
 		peer.join();
 		
 		
