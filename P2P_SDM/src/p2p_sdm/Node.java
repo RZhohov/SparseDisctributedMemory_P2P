@@ -13,6 +13,9 @@ public abstract class Node {
 	
 	protected int memory_size = 100;
 	protected int word_size = 1000;
+	public int ACK=0, JOIN=1, REQUEST=2, SUPER_REQUEST=3, REPLY=4;
+	public int PeerPort=7070;
+	
 
 	
 	public Socket handleConnection(String IP, int port){
@@ -51,6 +54,15 @@ public abstract class Node {
 		return m;
 	}
 	
+	protected abstract void loop();
+	
+	protected BitVector search(SDMImpl s, BitVector o) throws Throwable{
+		BitVector v = s.retrieve(o);
+		return v;
+	}
+	
+
+
 
 
 }

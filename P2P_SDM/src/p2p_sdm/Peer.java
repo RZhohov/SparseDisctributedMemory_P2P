@@ -30,14 +30,14 @@ public class Peer extends Node {
 	 */
 	public Peer() {
 		sdm = new SDMImpl(memory_size, 100, word_size);
-		get_SuperPeers();
+		getSPeers();
 		ID = sdm.generateID();
 	}
 	
 	/**
 	 * Obtains IP address and port of SuperPeers and stores them into ArrrayList superPeers
 	 */
-	private void get_SuperPeers() {
+	private void getSPeers() {
 		String[] ip_port = {"localhost", "8080"};
 		superPeers.add(ip_port);
 	}
@@ -48,11 +48,11 @@ public class Peer extends Node {
 	 * 
 	 */
 	public void join() {
-		toPeer = new Message(1, ID);
+		toPeer = new Message(JOIN, ID);
 		Socket conn = handleConnection(superPeers.get(0)[0], Integer.parseInt(superPeers.get(0)[1]));
 		send(conn, toPeer);
 		fromPeer = receive(conn);
-		if (fromPeer.getType() == 0){
+		if (fromPeer.getType() == fromPeer.ACK){
 			System.out.println("Successfully joined ACK");
 			try {
 				conn.close();
@@ -65,24 +65,37 @@ public class Peer extends Node {
 	public void loop(){
 		ServerSocket welcomeSocket;
 		try {
-			welcomeSocket = new ServerSocket(Integer.parseInt(superPeers.get(0)[1]));
+			welcomeSocket = new ServerSocket(PeerPort);
 			 while (true) {
 				   System.out.println("Peer is Listening");
 				   Socket connectionSocket = welcomeSocket.accept();
-				   ObjectInputStream input = new ObjectInputStream(connectionSocket.getInputStream());
-				   Message fromPeer = (Message) input.readObject();
-				   if (fromPeer.getType() == fromPeer.JOIN)
-				   { }
+				   Message fromPeer = (Message) receive(connectionSocket);
+				   if (fromPeer.getType() == REQUEST)
+				   {
+					   Object[] payload = (Object[]) fromPeer.getContent();
+					   BitVector result = search(sdm, (BitVector) payload[0]);
+					   Message m = new Message(REPLY, result);
+					   Socket reply = handleConnection((String) payload[1], PeerPort);
+					   send(reply, m);
+					   reply.close();
 				   }
+				   
+				   
+			}
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}
 	
 	
+	
+
+
+	
+
+
+
 	
 
 
