@@ -16,8 +16,6 @@ public abstract class Node {
 	public int ACK=0, JOIN=1, REQUEST=2, SUPER_REQUEST=3, REPLY=4;
 	public int PeerPort=7070;
 	
-
-	
 	public Socket handleConnection(String IP, int port){
 		  Socket conn = null;
 		try {
@@ -54,12 +52,19 @@ public abstract class Node {
 		return m;
 	}
 	
-	protected abstract void loop();
-	
 	protected BitVector search(SDMImpl s, BitVector o) throws Throwable{
 		BitVector v = s.retrieve(o);
 		return v;
 	}
+	
+	protected void request(BitVector v, String ip, int port) throws IOException{
+		Message m = new Message(REQUEST, v);
+		Socket s = handleConnection(ip, port);
+		send(s, m);
+		s.close();
+	}
+	
+	protected abstract void loop();
 	
 
 

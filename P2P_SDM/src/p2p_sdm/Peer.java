@@ -21,6 +21,8 @@ public class Peer extends Node {
 	private ArrayList<String[]> superPeers = new ArrayList<String[]>();
 	private SDMImpl sdm;
 	private BitVector ID;
+	private String SPeerIP;
+	private int SPeerPort;
 
 	/**
 	 * Constructor of Peer
@@ -49,7 +51,9 @@ public class Peer extends Node {
 	 */
 	public void join() {
 		toPeer = new Message(JOIN, ID);
-		Socket conn = handleConnection(superPeers.get(0)[0], Integer.parseInt(superPeers.get(0)[1]));
+		SPeerIP = superPeers.get(0)[0];
+		SPeerPort = Integer.parseInt(superPeers.get(0)[1]);
+		Socket conn = handleConnection(SPeerIP, SPeerPort);
 		send(conn, toPeer);
 		fromPeer = receive(conn);
 		if (fromPeer.getType() == fromPeer.ACK){
