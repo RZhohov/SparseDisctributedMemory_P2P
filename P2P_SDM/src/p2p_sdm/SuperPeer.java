@@ -1,29 +1,20 @@
 package p2p_sdm;
 
 import java.io.IOException;
-
 import java.io.ObjectInputStream;
-import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Scanner;
 import java.util.Set;
-
 import sdm.BitVector;
 import sdm.SDMImpl;
 
-
-
-public class SuperPeer extends Node {
-     
+public class SuperPeer extends Node {   
     private SDMImpl sdm;
     private BitVector ID;
-    public ArrayList<String[]> superPeers = new ArrayList<String[]>();
+    private ArrayList<String[]> superPeers = new ArrayList<String[]>();
     private Hashtable<String, BitVector> register =new Hashtable<String, BitVector>(); 
     
     /**
@@ -130,10 +121,6 @@ public class SuperPeer extends Node {
 			}
 	}
 	}
-	
-	
-
-
 	
 	public static void main(String[] args) {
 		SuperPeer speer = new SuperPeer();
