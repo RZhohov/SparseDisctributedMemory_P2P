@@ -1,12 +1,17 @@
 package p2p_sdm;
 
 import java.io.IOException;
+
 import java.io.ObjectInputStream;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Scanner;
 import java.util.Set;
 
 import sdm.BitVector;
@@ -15,12 +20,10 @@ import sdm.SDMImpl;
 
 
 public class SuperPeer extends Node {
-	
-	
      
     private SDMImpl sdm;
     private BitVector ID;
-    private ArrayList<String[]> superPeers = new ArrayList<String[]>();
+    public ArrayList<String[]> superPeers = new ArrayList<String[]>();
     private Hashtable<String, BitVector> register =new Hashtable<String, BitVector>(); 
     
     /**
@@ -34,8 +37,17 @@ public class SuperPeer extends Node {
 	}
 	
 	public void getSPeers(){
-		String[] ip_port = {"localhost", "8080"};
-		superPeers.add(ip_port);
+		Socket sns = handleConnection("127.0.0.1", 7777);
+		ObjectInputStream fromSNS;
+		try {
+			fromSNS = new ObjectInputStream(sns.getInputStream());
+			superPeers = (ArrayList<String[]>) fromSNS.readObject();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	/**
