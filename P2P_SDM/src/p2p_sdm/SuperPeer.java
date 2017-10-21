@@ -28,16 +28,7 @@ public class SuperPeer extends Node {
 	}
 	
 	public void getSPeers(){
-		Socket sns = handleConnection("127.0.0.1", 7777);
-		ObjectInputStream fromSNS;
-		try {
-			fromSNS = new ObjectInputStream(sns.getInputStream());
-			superPeers = (ArrayList<String[]>) fromSNS.readObject();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+
 		
 	}
 
