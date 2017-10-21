@@ -64,7 +64,7 @@ public class Peer extends Node {
 		Socket conn = handleConnection(SPeerIP, SUPER_PORT);
 		send(conn, toPeer);
 		fromPeer = receive(conn);
-		if (fromPeer.getType() == fromPeer.ACK){
+		if (fromPeer.getType() == ACK){
 			System.out.println("Successfully joined ACK");
 			try {
 				conn.close();
@@ -82,6 +82,7 @@ public class Peer extends Node {
 				   System.out.println("Peer is Listening");
 				   Socket connectionSocket = welcomeSocket.accept();
 				   Message fromPeer = (Message) receive(connectionSocket);
+				   
 				   if (fromPeer.getType() == REQUEST)
 				   {
 					   Object[] payload = (Object[]) fromPeer.getContent();
@@ -90,6 +91,20 @@ public class Peer extends Node {
 					   Socket reply = handleConnection((String) payload[1], PEER_PORT);
 					   send(reply, m);
 					   reply.close();
+				   }
+				   
+				   if (fromPeer.getType() == GUI)
+				   {
+					   Message toGUI = new Message(ACK, "ACK");
+					   send(connectionSocket, toGUI);
+				   }
+				   
+				   if (fromPeer.getType() == GUI_REQUEST)
+				   {
+					   //self search
+					   BitVector query = (BitVector) fromPeer.getContent();
+					   Message m = new Message(REQUEST, query);
+					   System.out.println("Peer received query from GUI "+query.print());
 				   }
 				   
 				   

@@ -3,9 +3,8 @@ package p2p_sdm;
 import java.io.Serializable;
 
 
-class Message implements Serializable {
+public class Message implements Serializable {
 	
-	public int ACK=0, JOIN=1, REQUEST=2, REPLY=3; 
 	private int type;
 	private Object content;
 	
