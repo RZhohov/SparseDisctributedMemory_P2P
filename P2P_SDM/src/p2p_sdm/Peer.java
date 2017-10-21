@@ -18,7 +18,7 @@ public class Peer extends Node {
 	
 	private Message toPeer;
 	private Message fromPeer;
-	private ArrayList<String[]> superPeers = new ArrayList<String[]>();
+	private ArrayList<String> superPeers = new ArrayList<String>();
 	private SDMImpl sdm;
 	private BitVector ID;
 	private String SPeerIP;
@@ -40,8 +40,15 @@ public class Peer extends Node {
 	 * Obtains IP address and port of SuperPeers and stores them into ArrrayList superPeers
 	 */
 	private void getSPeers() {
-		String[] ip_port = {"localhost", "8080"};
-		superPeers.add(ip_port);
+		Socket socket = handleConnection("52.26.203.26", 7777);
+		try {
+			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+			superPeers = (ArrayList<String>) in.readObject();
+			in.close();
+			socket.close();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 
@@ -51,9 +58,10 @@ public class Peer extends Node {
 	 */
 	public void join() {
 		toPeer = new Message(JOIN, ID);
-		SPeerIP = superPeers.get(0)[0];
-		SPeerPort = Integer.parseInt(superPeers.get(0)[1]);
-		Socket conn = handleConnection(SPeerIP, SPeerPort);
+		
+		//add random SP selection
+		SPeerIP = superPeers.get(0);
+		Socket conn = handleConnection(SPeerIP, SUPER_PORT);
 		send(conn, toPeer);
 		fromPeer = receive(conn);
 		if (fromPeer.getType() == fromPeer.ACK){
@@ -69,7 +77,7 @@ public class Peer extends Node {
 	public void loop(){
 		ServerSocket welcomeSocket;
 		try {
-			welcomeSocket = new ServerSocket(PeerPort);
+			welcomeSocket = new ServerSocket(PEER_PORT);
 			 while (true) {
 				   System.out.println("Peer is Listening");
 				   Socket connectionSocket = welcomeSocket.accept();
@@ -79,7 +87,7 @@ public class Peer extends Node {
 					   Object[] payload = (Object[]) fromPeer.getContent();
 					   BitVector result = search(sdm, (BitVector) payload[0]);
 					   Message m = new Message(REPLY, result);
-					   Socket reply = handleConnection((String) payload[1], PeerPort);
+					   Socket reply = handleConnection((String) payload[1], PEER_PORT);
 					   send(reply, m);
 					   reply.close();
 				   }

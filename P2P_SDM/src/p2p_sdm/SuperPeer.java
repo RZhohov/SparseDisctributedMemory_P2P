@@ -14,7 +14,7 @@ import sdm.SDMImpl;
 public class SuperPeer extends Node {   
     private SDMImpl sdm;
     private BitVector ID;
-    private ArrayList<String[]> superPeers = new ArrayList<String[]>();
+    public ArrayList<String> superPeers = new ArrayList<String>();
     private Hashtable<String, BitVector> register =new Hashtable<String, BitVector>(); 
     
     /**
@@ -27,9 +27,18 @@ public class SuperPeer extends Node {
 		getSPeers();
 	}
 	
+	
 	public void getSPeers(){
-
 		
+		Socket socket = handleConnection("52.26.203.26", 7777);
+		try {
+			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+			superPeers = (ArrayList<String>) in.readObject();
+			in.close();
+			socket.close();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -38,7 +47,7 @@ public class SuperPeer extends Node {
 	public void loop() {
 		ServerSocket welcomeSocket;
 		try {
-			welcomeSocket = new ServerSocket(8080);
+			welcomeSocket = new ServerSocket(SUPER_PORT);
 			 while (true) {
 				   System.out.println("Listening");
 				   Socket connectionSocket = welcomeSocket.accept();
@@ -87,7 +96,7 @@ public class SuperPeer extends Node {
         Set<String> IPs = register.keySet();
         for(String IP: IPs){
         	if (!s.getInetAddress().equals(IP)){
-        	Socket reqsock = handleConnection(IP, PeerPort);
+        	Socket reqsock = handleConnection(IP, PEER_PORT);
         	Object[] content = (Object[]) new Object();
 			content[0]= m.getContent();
 			content[1]= s.getInetAddress();
@@ -99,10 +108,10 @@ public class SuperPeer extends Node {
 	}
 	
 	public void searchSP(Socket s, Message m) throws IOException{
-		for (String[] SPeer: superPeers){
+		for (String SPeer: superPeers){
 			String local = InetAddress.getLocalHost().getHostAddress();
-			if (!local.equals(SPeer[0])){
-			Socket conn = handleConnection(SPeer[0], Integer.parseInt(SPeer[1]));
+			if (!local.equals(SPeer)){
+			Socket conn = handleConnection(SPeer, SUPER_PORT);
 			Object[] content = (Object[]) new Object();
 			content[0]= m.getContent();
 			content[1]= s.getInetAddress();

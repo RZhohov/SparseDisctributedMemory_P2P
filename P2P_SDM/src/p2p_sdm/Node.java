@@ -14,7 +14,8 @@ public abstract class Node {
 	protected int memory_size = 100;
 	protected int word_size = 1000;
 	public int ACK=0, JOIN=1, REQUEST=2, SUPER_REQUEST=3, REPLY=4;
-	public int PeerPort=7070;
+	public int PEER_PORT=7070;
+	public int SUPER_PORT = 8080;
 	
 	public Socket handleConnection(String IP, int port){
 		  Socket conn = null;
