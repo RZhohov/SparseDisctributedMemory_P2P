@@ -17,8 +17,8 @@ public class Main {
 		peer.join();
 		peer.loop();
 		
-		
-		
+		//peer.getSPeers();
+		//System.out.println(peer.superPeers.toString());
 
 	}
 

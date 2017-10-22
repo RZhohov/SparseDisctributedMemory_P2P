@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Random;
 
 import sdm.BitVector;
 import sdm.BitVectorUtility;
@@ -18,7 +19,7 @@ public class Peer extends Node {
 	
 	private Message toPeer;
 	private Message fromPeer;
-	private ArrayList<String> superPeers = new ArrayList<String>();
+	public ArrayList<String> superPeers = new ArrayList<String>();
 	private SDMImpl sdm;
 	private BitVector ID;
 	private String SPeerIP;
@@ -40,7 +41,7 @@ public class Peer extends Node {
 	/**
 	 * Obtains IP address and port of SuperPeers and stores them into ArrrayList superPeers
 	 */
-	private void getSPeers() {
+	public void getSPeers() {
 		Socket socket = handleConnection("52.26.203.26", 7777);
 		try {
 			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
@@ -59,8 +60,11 @@ public class Peer extends Node {
 	 */
 	public void join() {
 		toPeer = new Message(JOIN, ID);
-		//add random SP selection
-		SPeerIP = superPeers.get(0);
+		int max = superPeers.size() - 1;
+		int min = 0;
+	    Random rand = new Random();
+	    int randomSPeer = rand.nextInt((max - min) + 1) + min;
+		SPeerIP = superPeers.get(randomSPeer);
 		Socket conn = handleConnection(SPeerIP, SUPER_PORT);
 		send(conn, toPeer);
 		fromPeer = receive(conn);
