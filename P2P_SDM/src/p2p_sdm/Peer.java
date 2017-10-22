@@ -23,6 +23,7 @@ public class Peer extends Node {
 	private BitVector ID;
 	private String SPeerIP;
 	private int SPeerPort;
+	private String GUI_IP;
 
 	/**
 	 * Constructor of Peer
@@ -58,7 +59,6 @@ public class Peer extends Node {
 	 */
 	public void join() {
 		toPeer = new Message(JOIN, ID);
-		
 		//add random SP selection
 		SPeerIP = superPeers.get(0);
 		Socket conn = handleConnection(SPeerIP, SUPER_PORT);
@@ -101,10 +101,27 @@ public class Peer extends Node {
 				   
 				   if (fromPeer.getType() == GUI_REQUEST)
 				   {
-					   //self search
+					   //ADD self search
+					   GUI_IP = connectionSocket.getInetAddress().getHostAddress();
+					   System.out.println("GUI IP is "+GUI_IP);
 					   BitVector query = (BitVector) fromPeer.getContent();
 					   Message m = new Message(REQUEST, query);
 					   System.out.println("Peer received query from GUI "+query.print());
+					   Socket s = handleConnection(SPeerIP, SUPER_PORT);
+					   send(s, m);
+				   }
+				   
+				   
+				   if (fromPeer.getType() == REPLY){
+					   BitVector reply = (BitVector) fromPeer.getContent();
+					   System.out.println("Reply received: "+reply.print());
+					   
+					   Socket toGUI = handleConnection(GUI_IP, GUI_PORT);
+					   Message m = new Message(ACK, reply);
+					   System.out.println("SENDING REPLY TO GUI");
+					   send(toGUI, m);
+					   toGUI.close();
+					   
 				   }
 				   
 				   

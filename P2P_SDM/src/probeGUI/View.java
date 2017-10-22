@@ -20,6 +20,7 @@ public class View extends JFrame{
 	private JTextField IPField;
 	private JTextField statusField;
 	private JTextField vectorField;
+	private JTextArea resultArea;
 	private Probe p;
 	
 	public View(){
@@ -42,6 +43,10 @@ public class View extends JFrame{
 	
 	public void displayVector(BitVector v){
 		vectorField.setText(v.print());
+	}
+	
+	public void displayResult(BitVector v){
+		resultArea.append(v.print());
 	}
 
 	protected Component createContents() {
@@ -101,9 +106,9 @@ public class View extends JFrame{
 			   }
 			});
 		
-		JTextArea textArea = new JTextArea();
-		textArea.setBounds(15, 238, 458, 180);
-		mainpanel.add(textArea);
+		resultArea = new JTextArea();
+		resultArea.setBounds(15, 238, 458, 180);
+		mainpanel.add(resultArea);
 		
 		JLabel lblResult = new JLabel("Result:");
 		lblResult.setBounds(15, 197, 69, 20);

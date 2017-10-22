@@ -1,6 +1,8 @@
 package probeGUI;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 import p2p_sdm.Node;
@@ -54,19 +56,36 @@ public class Probe extends Node {
 		Socket s = handleConnection(IP, PEER_PORT);
 		Message m = new Message(GUI_REQUEST, v);
 		send(s, m);
-		//add receive and display results
 		try {
 			s.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
+		ServerSocket GUISocket;
+		try {
+			GUISocket = new ServerSocket(GUI_PORT);
+			while (true) {
+				System.out.println("Connection to GUI");
+				   Socket connectionSocket = GUISocket.accept();
+				   ObjectInputStream input = new ObjectInputStream(connectionSocket.getInputStream());
+				   Message fromPeer = (Message) input.readObject();
+				   BitVector response = (BitVector) fromPeer.getContent();
+				   myGUI.displayResult(response);
+				   input.close();
+				   connectionSocket.close();
+				   break;
+			 }
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}	
 	}
 	
 	
 	public static void main(String[] args) {
 		Probe p = new Probe();
-		
 	}
 
 

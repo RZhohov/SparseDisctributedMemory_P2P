@@ -16,6 +16,7 @@ public abstract class Node {
 	public int ACK=0, JOIN=1, REQUEST=2, SUPER_REQUEST=3, REPLY=4, GUI=5, GUI_REQUEST=6;
 	public int PEER_PORT=7070;
 	public int SUPER_PORT = 8080;
+	public int GUI_PORT = 9090;
 	
 	public Socket handleConnection(String IP, int port){
 		  Socket conn = null;
