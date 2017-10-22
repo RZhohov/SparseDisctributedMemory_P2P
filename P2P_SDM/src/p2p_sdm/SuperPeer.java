@@ -65,23 +65,34 @@ public class SuperPeer extends Node {
 					   connectionSocket.close();
 				   }
 				   
-				   if ((fromPeer.getType() == REQUEST) || (fromPeer.getType() == SUPER_REQUEST))
+				   if (fromPeer.getType() == REQUEST)
 				   {
 					   System.out.println("SP received request from peer: " + connectionSocket.getInetAddress().getHostAddress());
-					   
 					   //search at SP itself
 					   BitVector result = search(sdm, (BitVector) fromPeer.getContent());
 					   Message m = new Message(REPLY, result);
 					   Socket toPeer = handleConnection(connectionSocket.getInetAddress().getHostAddress(), PEER_PORT);
 					   send(toPeer, m);
-					   
 					   //search among connected Peers
 					   searchChild(connectionSocket.getInetAddress().getHostAddress(), fromPeer);
-					   
 					   //send request to other SPs
-				       if (fromPeer.getType() == REQUEST){
-				          //searchSP(connectionSocket.getInetAddress().getHostAddress(), fromPeer);
-				       }
+				       searchSP(connectionSocket.getInetAddress().getHostAddress(), fromPeer);
+				       
+				   }
+				   
+				   if (fromPeer.getType() == SUPER_REQUEST)
+				   {
+					   System.out.println("SP received request from Super Peer: " + connectionSocket.getInetAddress().getHostAddress());
+					   //search at SP itself
+					   Object[] payload = (Object[]) fromPeer.getContent();
+					   BitVector query = (BitVector) payload[0];
+					   String peerIP = (String) payload[1];
+					   BitVector result = search(sdm, query);
+					   Message m = new Message(REPLY, result);
+					   Socket toPeer = handleConnection(peerIP, PEER_PORT);
+					   send(toPeer, m);
+					   //search among connected Peers
+					   searchChild(peerIP, fromPeer);
 				   }
 				      
 				  }
