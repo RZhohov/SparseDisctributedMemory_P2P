@@ -76,14 +76,12 @@ public class SuperPeer extends Node {
 					   send(toPeer, m);
 					   
 					   //search among connected Peers
-					   //ADD CHECK IF THERE EXIST
-					   //searchChild(connectionSocket, fromPeer);
+					   searchChild(connectionSocket.getInetAddress().getHostAddress(), fromPeer);
 					   
 					   //send request to other SPs
-					   //ADD CHECK IF THEY EXIST
-				       //if (fromPeer.getType() == REQUEST){
-				       //   searchSP(connectionSocket, fromPeer);
-				       //}
+				       if (fromPeer.getType() == REQUEST){
+				          // searchSP(connectionSocket.getInetAddress().getHostAddress(), fromPeer);
+				       }
 				   }
 				      
 				  }
@@ -97,33 +95,40 @@ public class SuperPeer extends Node {
 
 	}
 	
-	public void searchChild(Socket s, Message m) throws IOException{
+	public void searchChild(String local, Message m) throws IOException{
         Set<String> IPs = register.keySet();
+        if (IPs.size()>0)
+        {
         for(String IP: IPs){
-        	if (!s.getInetAddress().equals(IP)){
+        	if (!local.equals(IP)){
         	Socket reqsock = handleConnection(IP, PEER_PORT);
-        	Object[] content = (Object[]) new Object();
+        	Object[] content = new Object[2];
 			content[0]= m.getContent();
-			content[1]= s.getInetAddress();
+			content[1]= local;
 			Message reqmes = new Message(REQUEST, content);
 			send(reqsock, reqmes);
 			reqsock.close();	
         }	
         }
+        }
 	}
 	
-	public void searchSP(Socket s, Message m) throws IOException{
+	public void searchSP(String local, Message m) throws IOException{
+		String this_local = InetAddress.getLocalHost().getHostAddress();
+		System.out.println("THIS IP "+this_local);
+		if (superPeers.size()>0)
+		{
 		for (String SPeer: superPeers){
-			String local = InetAddress.getLocalHost().getHostAddress();
-			if (!local.equals(SPeer)){
+			if (!this_local.equals(SPeer)){
 			Socket conn = handleConnection(SPeer, SUPER_PORT);
-			Object[] content = (Object[]) new Object();
+			Object[] content = new Object[2];
 			content[0]= m.getContent();
-			content[1]= s.getInetAddress();
+			content[1]= local;
 			Message req = new Message(SUPER_REQUEST, content);
 			send(conn, req);
 			conn.close();
 			}
+	}
 	}
 	}
 	

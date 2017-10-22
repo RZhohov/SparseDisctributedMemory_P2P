@@ -103,7 +103,7 @@ public class Peer extends Node {
 				   {
 					   //ADD self search
 					   GUI_IP = connectionSocket.getInetAddress().getHostAddress();
-					   System.out.println("GUI IP is "+GUI_IP);
+					   System.out.println("GUI IP is "+ GUI_IP);
 					   BitVector query = (BitVector) fromPeer.getContent();
 					   Message m = new Message(REQUEST, query);
 					   System.out.println("Peer received query from GUI "+query.print());
