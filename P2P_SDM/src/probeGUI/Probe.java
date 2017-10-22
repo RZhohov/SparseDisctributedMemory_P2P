@@ -66,7 +66,7 @@ public class Probe extends Node {
 		try {
 			GUISocket = new ServerSocket(GUI_PORT);
 			while (true) {
-				System.out.println("Connection to GUI");
+				System.out.println("GUI Listens");
 				   Socket connectionSocket = GUISocket.accept();
 				   ObjectInputStream input = new ObjectInputStream(connectionSocket.getInputStream());
 				   Message fromPeer = (Message) input.readObject();

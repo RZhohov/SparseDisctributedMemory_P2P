@@ -25,6 +25,9 @@ public class Peer extends Node {
 	private String SPeerIP;
 	private int SPeerPort;
 	private String GUI_IP;
+	private BitVector slfResult;
+
+	
 
 	/**
 	 * Constructor of Peer
@@ -36,6 +39,7 @@ public class Peer extends Node {
 		sdm = new SDMImpl(memory_size, 100, word_size);
 		getSPeers();
 		ID = sdm.generateID();
+		
 	}
 	
 	/**
@@ -89,6 +93,7 @@ public class Peer extends Node {
 				   
 				   if (fromPeer.getType() == REQUEST)
 				   {
+					   System.out.println("Received Request");
 					   Object[] payload = (Object[]) fromPeer.getContent();
 					   BitVector result = search(sdm, (BitVector) payload[0]);
 					   Message m = new Message(REPLY, result);
@@ -105,10 +110,10 @@ public class Peer extends Node {
 				   
 				   if (fromPeer.getType() == GUI_REQUEST)
 				   {
-					   //ADD self search
 					   GUI_IP = connectionSocket.getInetAddress().getHostAddress();
 					   System.out.println("GUI IP is "+ GUI_IP);
 					   BitVector query = (BitVector) fromPeer.getContent();
+					   slfResult = sdm.retrieve(query);					   
 					   Message m = new Message(REQUEST, query);
 					   System.out.println("Peer received query from GUI "+query.print());
 					   Socket s = handleConnection(SPeerIP, SUPER_PORT);
@@ -120,8 +125,11 @@ public class Peer extends Node {
 					   BitVector reply = (BitVector) fromPeer.getContent();
 					   System.out.println("Reply received: "+reply.print());
 					   
+					   // slfResult = slfResult | reply
+					   slfResult.or(reply);
+					   
 					   Socket toGUI = handleConnection(GUI_IP, GUI_PORT);
-					   Message m = new Message(ACK, reply);
+					   Message m = new Message(ACK, slfResult);
 					   System.out.println("SENDING REPLY TO GUI");
 					   send(toGUI, m);
 					   toGUI.close();

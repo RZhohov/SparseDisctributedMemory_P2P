@@ -80,7 +80,7 @@ public class SuperPeer extends Node {
 					   
 					   //send request to other SPs
 				       if (fromPeer.getType() == REQUEST){
-				          // searchSP(connectionSocket.getInetAddress().getHostAddress(), fromPeer);
+				          //searchSP(connectionSocket.getInetAddress().getHostAddress(), fromPeer);
 				       }
 				   }
 				      
