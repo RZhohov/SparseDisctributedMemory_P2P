@@ -92,7 +92,8 @@ public class SuperPeer extends Node {
 					   Socket toPeer = handleConnection(peerIP, PEER_PORT);
 					   send(toPeer, m);
 					   //search among connected Peers
-					   searchChild(peerIP, fromPeer);
+					   Message forChild = new Message(REQUEST, query);
+					   searchChild(peerIP, forChild);
 				   }
 				      
 				  }
