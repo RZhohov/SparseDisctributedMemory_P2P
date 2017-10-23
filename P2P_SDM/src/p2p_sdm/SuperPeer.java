@@ -15,7 +15,9 @@ public class SuperPeer extends Node {
     private SDMImpl sdm;
     private BitVector ID;
     public ArrayList<String> superPeers = new ArrayList<String>();
-    private Hashtable<String, BitVector> register =new Hashtable<String, BitVector>(); 
+    private Hashtable<String, BitVector> register =new Hashtable<String, BitVector>();
+    private String GUI_IP;
+    private BitVector slfResult;
     
     /**
      * Constructs SuperPeer
@@ -94,6 +96,25 @@ public class SuperPeer extends Node {
 					   //search among connected Peers
 					   Message forChild = new Message(REQUEST, query);
 					   searchChild(peerIP, forChild);
+				   }
+				   
+				   if (fromPeer.getType() == GUI)
+				   {
+					   Message toGUI = new Message(ACK, "ACK");
+					   send(connectionSocket, toGUI);
+				   }
+				   
+				   if (fromPeer.getType() == GUI_REQUEST)
+				   {
+					   GUI_IP = connectionSocket.getInetAddress().getHostAddress();
+					   System.out.println("GUI IP is "+ GUI_IP);
+					   BitVector query = (BitVector) fromPeer.getContent();
+					   slfResult = sdm.retrieve(query);					   
+					   Message m = new Message(REQUEST, query);
+					   System.out.println("Peer received query from GUI "+query.print());
+					   //TEST this
+					   searchChild(InetAddress.getLocalHost().getHostAddress(), fromPeer);
+					   searchSP(InetAddress.getLocalHost().getHostAddress(), fromPeer);
 				   }
 				      
 				  }
