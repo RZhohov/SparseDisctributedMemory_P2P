@@ -116,6 +116,20 @@ public class SuperPeer extends Node {
 					   searchChild(InetAddress.getLocalHost().getHostAddress(), fromPeer);
 					   searchSP(InetAddress.getLocalHost().getHostAddress(), fromPeer);
 				   }
+				   
+				   if (fromPeer.getType() == REPLY){
+					   BitVector reply = (BitVector) fromPeer.getContent();
+					   System.out.println("Reply received: "+reply.print());
+					   // slfResult = slfResult | reply
+					   slfResult.or(reply);
+					   Socket toGUI = handleConnection(GUI_IP, GUI_PORT);
+					   Message m = new Message(ACK, slfResult);
+					   
+					   System.out.println("SENDING REPLY TO GUI");
+					   send(toGUI, m);
+					   toGUI.close();
+					   
+				   }
 				      
 				  }
 		} catch (IOException e) {
