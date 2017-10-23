@@ -167,7 +167,7 @@ public class SuperPeer extends Node {
 	
 	public static void main(String[] args) {
 		
-		//args take flag
+		
 		
 		SuperPeer speer = new SuperPeer();
 		//speer.getSPeers();
