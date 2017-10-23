@@ -168,7 +168,6 @@ public class SuperPeer extends Node {
 	public static void main(String[] args) {
 		
 		
-		
 		SuperPeer speer = new SuperPeer();
 		//speer.getSPeers();
 		//System.out.println(speer.superPeers.toString());
