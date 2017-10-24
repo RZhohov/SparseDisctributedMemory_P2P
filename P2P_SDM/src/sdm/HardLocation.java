@@ -79,12 +79,9 @@ public class HardLocation  {
 
 	public int[] read(int[] buff) {
 
-		// if (buff.length<wordLength){
-		// throw new IllegalArgumentException();
-		// }
 
 		for (int i = 0; i < wordLength; i++) {
-//			int inc=0;
+
 			buff[i] += Integer.signum(counters[i]);
 		}
 		return buff;
