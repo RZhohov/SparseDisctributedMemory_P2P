@@ -139,7 +139,7 @@ public class MegaPeer extends Node {
 						   BitVector query = (BitVector) fromPeer.getContent();
 						   slfResult = sdm.retrieve(query);					   
 						   Message m = new Message(REQUEST, query);
-						   System.out.println("Peer received query from GUI "+query.print());
+						   System.out.println("Peer received query from GUI");
 						   searchChild(InetAddress.getLocalHost().getHostAddress(), fromPeer);
 						   searchSP(InetAddress.getLocalHost().getHostAddress(), fromPeer);
 					   }
@@ -175,10 +175,8 @@ public class MegaPeer extends Node {
 				   if (fromPeer.getType() == REPLY){
 					   BitVector reply = (BitVector) fromPeer.getContent();
 					   System.out.println("Reply received: "+reply.print());
-					   
 					   // slfResult = slfResult | reply
 					   slfResult.or(reply);
-					   
 					   Socket toGUI = handleConnection(GUI_IP, GUI_PORT);
 					   Message m = new Message(ACK, slfResult);
 					   System.out.println("SENDING REPLY TO GUI");
@@ -201,6 +199,7 @@ public class MegaPeer extends Node {
         {
         for(String IP: IPs){
         	if (!local.equals(IP)){
+            System.out.println("Sending Child Request to "+IP);
         	Socket reqsock = handleConnection(IP, PEER_PORT);
         	Object[] content = new Object[2];
 			content[0]= m.getContent();
@@ -215,10 +214,10 @@ public class MegaPeer extends Node {
 	
 	public void searchSP(String local, Message m) throws IOException{
 		String this_local = InetAddress.getLocalHost().getHostAddress();
-		System.out.println("THIS IP "+this_local);
 		if (superPeers.size()>0)
 		{
 		for (String SPeer: superPeers){
+			System.out.println("Sending SRequest to " + SPeer);
 			if (!this_local.equals(SPeer)){
 			Socket conn = handleConnection(SPeer, PEER_PORT);
 			Object[] content = new Object[2];
