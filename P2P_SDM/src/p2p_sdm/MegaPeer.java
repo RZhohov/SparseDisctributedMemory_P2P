@@ -217,8 +217,8 @@ public class MegaPeer extends Node {
 		if (superPeers.size()>0)
 		{
 		for (String SPeer: superPeers){
-			System.out.println("Sending SRequest to " + SPeer);
 			if (!this_local.equals(SPeer)){
+			System.out.println("Sending SRequest to " + SPeer);
 			Socket conn = handleConnection(SPeer, PEER_PORT);
 			Object[] content = new Object[2];
 			content[0]= m.getContent();
