@@ -101,13 +101,28 @@ public class MegaPeer extends Node {
 				   
 				   if (fromPeer.getType() == REQUEST)
 				   {
-					   System.out.println("Received Request");
-					   Object[] payload = (Object[]) fromPeer.getContent();
-					   BitVector result = search(sdm, (BitVector) payload[0]);
-					   Message m = new Message(REPLY, result);
-					   Socket reply = handleConnection((String) payload[1], PEER_PORT);
-					   send(reply, m);
-					   reply.close();
+					   if (SP_status){
+						   System.out.println("SP received request from peer: " + connectionSocket.getInetAddress().getHostAddress());
+						   //search at SP itself
+						   BitVector result = search(sdm, (BitVector) fromPeer.getContent());
+						   Message m = new Message(REPLY, result);
+						   Socket toPeer = handleConnection(connectionSocket.getInetAddress().getHostAddress(), PEER_PORT);
+						   send(toPeer, m);
+						   //search among connected Peers
+						   searchChild(connectionSocket.getInetAddress().getHostAddress(), fromPeer);
+						   //send request to other SPs
+					       searchSP(connectionSocket.getInetAddress().getHostAddress(), fromPeer);
+					   }
+					   else {
+						   System.out.println("Received Request");
+						   Object[] payload = (Object[]) fromPeer.getContent();
+						   BitVector result = search(sdm, (BitVector) payload[0]);
+						   Message m = new Message(REPLY, result);
+						   Socket reply = handleConnection((String) payload[1], PEER_PORT);
+						   send(reply, m);
+						   reply.close();
+					   }
+
 				   }
 				   
 				   if (fromPeer.getType() == GUI)
