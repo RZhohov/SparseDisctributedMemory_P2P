@@ -87,6 +87,18 @@ public class MegaPeer extends Node {
 				   Socket connectionSocket = welcomeSocket.accept();
 				   Message fromPeer = (Message) receive(connectionSocket);
 				   
+				   if (fromPeer.getType() == JOIN)
+				   {
+					   BitVector peerID = (BitVector) fromPeer.getContent();
+					   register.put(connectionSocket.getInetAddress().getHostAddress(), peerID);
+					   System.out.println("Join from "+connectionSocket.getInetAddress().getHostAddress());
+					   System.out.println("ID is "+ peerID.print());
+					   Message toPeer = new Message(ACK, "");
+					   send(connectionSocket, toPeer);
+					   connectionSocket.close();
+				   }
+				   
+				   
 				   if (fromPeer.getType() == REQUEST)
 				   {
 					   System.out.println("Received Request");
