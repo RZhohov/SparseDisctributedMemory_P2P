@@ -24,7 +24,7 @@ public class SuperPeer extends Node {
      * generates SDM and ID
      */
 	public SuperPeer() {
-		sdm = new SDMImpl(memory_size, 100, word_size);
+		sdm = new SDMImpl(memory_size, T, word_size);
 		ID = sdm.generateID();
 		getSPeers();
 	}

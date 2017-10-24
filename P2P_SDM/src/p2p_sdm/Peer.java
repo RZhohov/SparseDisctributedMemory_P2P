@@ -36,7 +36,7 @@ public class Peer extends Node {
 	 * Generates ID out of SDM
 	 */
 	public Peer() {
-		sdm = new SDMImpl(memory_size, 100, word_size);
+		sdm = new SDMImpl(memory_size, T, word_size);
 		getSPeers();
 		ID = sdm.generateID();
 		

@@ -13,6 +13,7 @@ public abstract class Node {
 	
 	protected int memory_size = 100;
 	protected int word_size = 1000;
+	protected int T = word_size/2;
 	public int ACK=0, JOIN=1, REQUEST=2, SUPER_REQUEST=3, REPLY=4, GUI=5, GUI_REQUEST=6;
 	public int PEER_PORT = 7070;
 	public int SUPER_PORT = 8080;
