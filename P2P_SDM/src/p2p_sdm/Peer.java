@@ -10,9 +10,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Random;
-
 import sdm.BitVector;
-import sdm.BitVectorUtility;
 import sdm.SDMImpl;
 
 public class Peer extends Node {
