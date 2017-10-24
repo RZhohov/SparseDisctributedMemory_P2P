@@ -59,12 +59,6 @@ public abstract class Node {
 		return v;
 	}
 	
-	protected void request(BitVector v, String ip, int port) throws IOException{
-		Message m = new Message(REQUEST, v);
-		Socket s = handleConnection(ip, port);
-		send(s, m);
-		s.close();
-	}
 	
 	
 	

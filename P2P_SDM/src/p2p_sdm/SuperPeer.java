@@ -161,8 +161,8 @@ public class SuperPeer extends Node {
 			send(conn, req);
 			conn.close();
 			}
-	}
-	}
+			}
+		}
 	}
 	
 	public static void main(String[] args) {
