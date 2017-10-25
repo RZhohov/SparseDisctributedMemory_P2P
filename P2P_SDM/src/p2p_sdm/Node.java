@@ -9,6 +9,11 @@ import java.net.UnknownHostException;
 import sdm.BitVector;
 import sdm.SDMImpl;
 
+/*
+ * Roman Zhohov, LTU, D7001 Network Programming, 2017
+ */
+
+
 public abstract class Node {
 	
 	protected int memory_size = 1000;
@@ -16,9 +21,14 @@ public abstract class Node {
 	protected int T = word_size/2;
 	public int ACK=0, JOIN=1, REQUEST=2, SUPER_REQUEST=3, REPLY=4, GUI=5, GUI_REQUEST=6;
 	public int PEER_PORT = 7070;
-	public int SUPER_PORT = 8080;
 	public int GUI_PORT = 9090;
 	
+	/**
+	 * Handles connection to the host(IP; PORT)
+	 * @param IP
+	 * @param port
+	 * @return Socket
+	 */
 	public Socket handleConnection(String IP, int port){
 		  Socket conn = null;
 		try {
@@ -31,6 +41,11 @@ public abstract class Node {
 		  return conn;
 	}
 	
+	/**
+	 * Sends message using socket
+	 * @param sock
+	 * @param m - message to be sent
+	 */
 	public void send(Socket sock, Message m) {
 		try {
 			ObjectOutputStream outToPeer = new ObjectOutputStream(sock.getOutputStream());
@@ -41,6 +56,11 @@ public abstract class Node {
 		}
 	}
 	
+	/**
+	 * Receives message from host
+	 * @param sock
+	 * @return Message
+	 */
 	public Message receive(Socket sock){
 		ObjectInputStream fromPeer;
 		Message m = null;
@@ -55,6 +75,13 @@ public abstract class Node {
 		return m;
 	}
 	
+	/**
+	 * Searches BitVector o in SDMImpl s
+	 * @param s - SDMImpl
+	 * @param o - BitVector to retrieve from SDMImpl
+	 * @return - retrieved BitVector
+	 * @throws Throwable
+	 */
 	protected BitVector search(SDMImpl s, BitVector o) throws Throwable{
 		BitVector v = s.retrieve(o);
 		return v;

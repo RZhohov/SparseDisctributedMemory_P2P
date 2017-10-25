@@ -1,7 +1,5 @@
 package sdm;
 
-
-
 public class BitVectorUtils {
 	
 	/**

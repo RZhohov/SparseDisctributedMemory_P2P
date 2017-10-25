@@ -13,6 +13,16 @@ import java.util.Set;
 import sdm.BitVector;
 import sdm.SDMImpl;
 
+/*
+ * Roman Zhohov, LTU, D7001 Network Programming, 2017
+ */
+
+/**
+ * MegaPeer
+ * Upon instance creates Peer of SuperPeer based on command line argument
+ * @author Roman Zhohov
+ *
+ */
 public class MegaPeer extends Node {
 	
 	private Message toPeer;
@@ -21,7 +31,6 @@ public class MegaPeer extends Node {
 	private SDMImpl sdm;
 	private BitVector ID;
 	private String SPeerIP;
-	private int SPeerPort;
 	private String GUI_IP;
 	private BitVector slfResult;
 	
@@ -32,11 +41,10 @@ public class MegaPeer extends Node {
 
 	
 	/**
-	 * Constructor of Peer
+	 * Constructor of Node 
 	 * creates SDM of given size and radius
-	 * get_SuperPeers() obtains IP address and Port of SuperPeer
 	 * Generates ID out of SDM
-	 * @param flag 
+	 * @param flag specifies the role: true - SuperPeer; false - Peer;
 	 */
 	public MegaPeer(boolean flag) {
 		sdm = new SDMImpl(memory_size, 100, word_size);
@@ -44,7 +52,10 @@ public class MegaPeer extends Node {
 		ID = sdm.generateID();
 		SP_status = flag;
 	}
-
+	
+	/**
+	 * Adds IP addresses of SuperPeers to the list
+	 */
 	public void getSPeers(){
 		
 		Socket socket = handleConnection("52.26.203.26", 7777);
@@ -58,6 +69,9 @@ public class MegaPeer extends Node {
 		}
 	}
 	
+	/**
+	 * Connects Peer to the SuperPeer (randomly chosen)
+	 */
 	public void join() {
 		toPeer = new Message(JOIN, ID);
 		int max = superPeers.size() - 1;
@@ -78,6 +92,9 @@ public class MegaPeer extends Node {
 		}
 		}
 	
+	/**
+	 * Main loop in which handling of each message type is done
+	 */
 	public void loop(){
 		ServerSocket welcomeSocket;
 		try {
@@ -87,6 +104,9 @@ public class MegaPeer extends Node {
 				   Socket connectionSocket = welcomeSocket.accept();
 				   Message fromPeer = (Message) receive(connectionSocket);
 				   
+				   /**
+				    * JOIN message is parsed by SuperPeer
+				    */
 				   if (fromPeer.getType() == JOIN)
 				   {
 					   BitVector peerID = (BitVector) fromPeer.getContent();
@@ -98,7 +118,9 @@ public class MegaPeer extends Node {
 					   connectionSocket.close();
 				   }
 				   
-				   
+				   /**
+				    * REQUEST message is parsed by Peer and SuperPeer
+				    */
 				   if (fromPeer.getType() == REQUEST)
 				   {
 					   if (SP_status){
@@ -125,20 +147,25 @@ public class MegaPeer extends Node {
 
 				   }
 				   
+				   /**
+				    * GUI acknowledged by Peer or SuperPeer
+				    */
 				   if (fromPeer.getType() == GUI)
 				   {
 					   Message toGUI = new Message(ACK, "ACK");
 					   send(connectionSocket, toGUI);
 				   }
 				   
+				   /**
+				    * Handling of GUI_REQUEST by SuperPeer and Peer
+				    */
 				   if (fromPeer.getType() == GUI_REQUEST)
 				   {
 					   if (SP_status){
 						   GUI_IP = connectionSocket.getInetAddress().getHostAddress();
 						   System.out.println("GUI IP is "+ GUI_IP);
 						   BitVector query = (BitVector) fromPeer.getContent();
-						   slfResult = sdm.retrieve(query);					   
-						   Message m = new Message(REQUEST, query);
+						   slfResult = sdm.retrieve(query);					  
 						   System.out.println("Peer received query from GUI");
 						   searchChild(InetAddress.getLocalHost().getHostAddress(), fromPeer);
 						   searchSP(InetAddress.getLocalHost().getHostAddress(), fromPeer);
@@ -155,6 +182,9 @@ public class MegaPeer extends Node {
 					   }
 				   }
 				   
+				   /**
+				    * SUPER_REQUET is parsed by SuperPeer
+				    */
 				   if (fromPeer.getType() == SUPER_REQUEST)
 				   {
 					   System.out.println("SP received request from Super Peer: " + connectionSocket.getInetAddress().getHostAddress());
@@ -171,7 +201,9 @@ public class MegaPeer extends Node {
 					   searchChild(peerIP, forChild);
 				   }
 				   
-				   
+				   /**
+				    * Calculation of result vector based on received REPLY
+				    */
 				   if (fromPeer.getType() == REPLY){
 					   BitVector reply = (BitVector) fromPeer.getContent();
 					   System.out.println("Reply received: "+reply.print());
@@ -193,6 +225,12 @@ public class MegaPeer extends Node {
 		}
 	}
 	
+	/**
+	 * Search of vector in Peers that are connected to SuperPeer
+	 * @param local - IP address of Peer that sent REQUEST
+	 * @param m - REQUEST message of Peer
+	 * @throws IOException
+	 */
 	public void searchChild(String local, Message m) throws IOException{
         Set<String> IPs = register.keySet();
         if (IPs.size()>0)
@@ -212,6 +250,12 @@ public class MegaPeer extends Node {
         }
 	}
 	
+	/**
+	 * Search REQUEST to SuperPeers
+	 * @param local - IP address of Peer that sent REQUEST
+	 * @param m - REQUEST message of Peer
+	 * @throws IOException
+	 */
 	public void searchSP(String local, Message m) throws IOException{
 		String this_local = InetAddress.getLocalHost().getHostAddress();
 		if (superPeers.size()>0)
@@ -231,15 +275,12 @@ public class MegaPeer extends Node {
 		}
 	}
 	
-	
-	
-
 	public static void main(String[] args) {
 		if (args[0].equals("super")){
 			MegaPeer speer = new MegaPeer(true);
 			speer.loop();
 		}
-		else {
+		if (args[0].equals("peer")) {
 			MegaPeer peer = new MegaPeer(false);
 			peer.join();
 			peer.loop();

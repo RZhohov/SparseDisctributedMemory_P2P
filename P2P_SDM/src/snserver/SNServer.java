@@ -1,13 +1,10 @@
 package snserver;
 
 
-/*Roman Zhohov
- * threaded TCP server 
- * 
- * 
- * 
- * 
- * PORT: 8080*/
+/*
+ * Roman Zhohov, LTU, D7001 Network Programming, 2017
+ */
+
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
@@ -21,6 +18,12 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * Threaded TCP-server run on port 7777
+ * Returns ArrayList of IP addresses on request
+ * @author Roman Zhohov
+ *
+ */
 public class SNServer implements Runnable {
 	 
    private static int PORT = 7777;

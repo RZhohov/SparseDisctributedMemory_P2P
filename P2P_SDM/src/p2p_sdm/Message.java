@@ -2,6 +2,11 @@ package p2p_sdm;
 
 import java.io.Serializable;
 
+/*
+ * Roman Zhohov, LTU, D7001 Network Programming, 2017
+ */
+
+
 
 public class Message implements Serializable {
 	

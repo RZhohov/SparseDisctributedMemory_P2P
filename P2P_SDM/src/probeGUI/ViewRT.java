@@ -1,7 +1,4 @@
 package probeGUI;
-
-
-
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +12,9 @@ import sdm.BitVector;
 
 import javax.swing.JTextArea;
 
+/*
+ * Roman Zhohov, LTU, D7001 Network Programming, 2017
+ */
 
 
 public class ViewRT extends JFrame{
@@ -26,9 +26,7 @@ public class ViewRT extends JFrame{
 	
 	public ViewRT(){
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setSize(510, 490);
-		//getContentPane().setLayout(null);
 		Component content = this.createContents();
 		getContentPane().add(content);
 		setDefaultLookAndFeelDecorated(true);

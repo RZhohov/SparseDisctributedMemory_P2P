@@ -14,6 +14,10 @@ import p2p_sdm.Node;
 import sdm.BitVector;
 import sdm.BitVectorUtils;
 
+/*
+ * Roman Zhohov, LTU, D7001 Network Programming, 2017
+ */
+
 public class ProbeRT extends Node {
 	
 	private ViewRT myGUI;
