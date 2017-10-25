@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # README #
 
 ### What is this repository for? ###
@@ -13,3 +14,6 @@ Consists of two packages: SDM and P2P.
 
 * Implement messaging (Message, Parser)
 * Insure P2P
+=======
+# SparseDisctributedMemory_P2P
+>>>>>>> branch 'master' of https://github.com/RZhohov/SparseDisctributedMemory_P2P.git
